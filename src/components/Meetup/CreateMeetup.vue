@@ -15,6 +15,7 @@
               label="Title"
               id="title"
               required
+              :rules="requiredRules"
               v-model="title"
               >
               </v-text-field>
@@ -28,6 +29,7 @@
                 id="location"
                 v-model="location"
                 required
+                :rules="requiredRules"
               >
               </v-text-field>
             </v-flex>
@@ -40,6 +42,7 @@
                 id="image-url"
                 v-model="imageUrl"
                 required
+                :rules="requiredRules"
               >
               </v-text-field>
             </v-flex>
@@ -64,6 +67,7 @@
                 label="Description"
                 id="description"
                 v-model="description"
+                :rules="requiredRules"
                 multi-line
                 required
               >
@@ -87,7 +91,10 @@
         title: '',
         location: '',
         imageUrl: '',
-        description: ''
+        description: '',
+        requiredRules: [
+          (v) => !!v || 'Field is required'
+        ]
       }
     },
     computed: {
