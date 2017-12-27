@@ -6,7 +6,7 @@
           <v-card-title><h1 class="primary--text">Sign Up to DevMeetup</h1><v-icon large>touch_app</v-icon></v-card-title>
           <v-card-text>
             <v-container>
-              <form>
+              <form @submit.prevent="onSignUp">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
@@ -51,7 +51,7 @@
 
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn>
+                    <v-btn type="submit">
                       Sign Up
                     </v-btn>
                   </v-flex>
@@ -78,12 +78,21 @@
     computed: {
       comparePasswords () {
         return this.password !== this.confirmPassword ? 'Passwords do not match' : true
+      },
+      user () {
+        return this.$store.getters.user
+      }
+    },
+    watch: {
+      user (value) {
+        if (value !== null && value !== undefined) {
+          this.$router.push('/')
+        }
       }
     },
     methods: {
       onSignUp () {
-        // Vuex
-        console.log(this.password + this.email + this.confirmPassword)
+        this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
       }
     }
   }
