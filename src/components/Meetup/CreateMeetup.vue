@@ -83,7 +83,7 @@
 
           <v-layout row mb-2>
             <v-flex xs12 sm6 offset-sm3 offset-xs1>
-              <v-date-picker v-model="date"></v-date-picker>
+              <v-date-picker v-model="date" autosave></v-date-picker>
             </v-flex>
           </v-layout>
 
@@ -113,7 +113,7 @@
         imageUrl: '',
         description: '',
         date: '',
-        time: new Date(),
+        time: '',
         requiredRules: [
           (v) => !!v || 'Field is required'
         ]
@@ -124,16 +124,28 @@
         return this.title !== '' && this.location !== '' && this.imageUrl !== '' && this.description !== ''
       },
       submittableDateTime () {
-        const date = new Date(this.date)
-        console.log(date === 'Invalid Date')
-        if (typeof this.time === 'string') {
+        var date = new Date()
+        if (this.time === '' && this.date === '') {
+          date = new Date()
+        } else if (this.time === '' && this.date !== '') {
+          date = new Date(this.date)
+          date.setHours(new Date().getHours())
+          date.setMinutes(new Date().getMinutes())
+          console.log('Time empty, date not empty')
+        } else if (this.time !== '' && this.date === '') {
+          console.log('Date empty, time not empty')
+          date = new Date()
           let hours = this.time.match(/^(\d+)/)[1]
-          const minutes = this.time.match(/:(\d+)/)[1]
+          let minutes = this.time.match(/:(\d+)/)[1]
           date.setHours(hours)
           date.setMinutes(minutes)
         } else {
-          date.setHours(this.time.getHours())
-          date.setMinutes(this.time.getMinutes())
+          console.log('Both Selected')
+          date = new Date(this.date)
+          let hours = this.time.match(/^(\d+)/)[1]
+          let minutes = this.time.match(/:(\d+)/)[1]
+          date.setHours(hours)
+          date.setMinutes(minutes)
         }
         return date
       }
