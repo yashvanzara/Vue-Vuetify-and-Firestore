@@ -7,10 +7,10 @@ import router from './router'
 import { store } from './store'
 import DateFilter from './filters/date'
 import * as firebase from 'firebase'
-
+import Alert from './components/Shared/Alert'
 Vue.use(Vuetify)
 Vue.filter('date', DateFilter)
-
+Vue.component('app-alert', Alert)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
