@@ -49,8 +49,14 @@ export const store = new Vuex.Store({
   },
   actions: {
     // Actions are invoked from the respective component pages (forms)
+    //  Can also write as meetup = payload
+    //  Connect to firebase
+    // Actions are the place to do Async tasks in Vuex store, never run async code in mutations
+    // ref allows us to pass name of node to under which we want to store our data
+    // Commit is a method, no payload here
+    // Convert date to Firebase supported format
+    // ... is the spread keyword, it grabs all members of the meetup object and uses it to create new object with id included
     loadMeetups ({commit}) {
-      // Commit is a method, no payload here
       commit('setLoading', true)
       firebase.database().ref('meetups').once('value')
         .then((data) => {
@@ -78,28 +84,37 @@ export const store = new Vuex.Store({
       const meetup = {
         title: payload.title,
         location: payload.location,
-        imageUrl: payload.imageUrl,
         description: payload.description,
         date: payload.date.toISOString(),
         creatorId: getters.user.id
-        // Convert date to Firebase supported format
       }
-      //  Can also write as meetup = payload
-      //  Connect to firebase
-      // Actions are the place to do Async tasks in Vuex store, never run async code in mutations
-      // ref allows us to pass name of node to under which we want to store our data
+      let imageUrl
+      let key
       firebase.database().ref('meetups').push(meetup)
         .then((data) => {
-          const key = data.key
+          key = data.key
+          return key
+        })
+        .then(key => {
+          const filename = payload.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
+          return firebase.storage().ref('meetups/' + key + '.' + ext).put(payload.image)
+        })
+        .then(fileData => {
+          imageUrl = fileData.metadata.downloadURLs[0]
+          return firebase.database().ref('meetups').child(key).update({imageUrl: imageUrl})
+        })
+        .then(() => {
           commit('createMeetup', {
             ...meetup,
+            imageUrl: imageUrl,
             id: key
-            // ... is the spread keyword, it grabs all members of the meetup object and uses it to create new object with id included
           })
         })
         .catch((error) => {
           console.log(error)
         })
+      // Reach out to firebase and store it
     },
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
