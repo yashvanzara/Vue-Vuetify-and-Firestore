@@ -42,22 +42,62 @@ export const store = new Vuex.Store({
     },
     clearError (state, payload) {
       state.error = null
+    },
+    setLoadedMeetups (state, payload) {
+      state.loadedMeetups = payload
     }
   },
   actions: {
     // Actions are invoked from the respective component pages (forms)
+    loadMeetups ({commit}) {
+      // Commit is a method, no payload here
+      commit('setLoading', true)
+      firebase.database().ref('meetups').once('value')
+        .then((data) => {
+          const meetups = []
+          const obj = data.val()
+          for (let key in obj) {
+            meetups.push({
+              id: key,
+              title: obj[key].title,
+              description: obj[key].description,
+              imageUrl: obj[key].imageUrl,
+              date: obj[key].date
+            })
+            commit('setLoadedMeetups', meetups)
+            commit('setLoading', false)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
     createMeetup ({commit}, payload) {
       const meetup = {
         title: payload.title,
         location: payload.location,
         imageUrl: payload.imageUrl,
         description: payload.description,
-        date: payload.date,
-        id: Math.random(10) + ''
+        date: payload.date.toISOString()
+        // Convert date to Firebase supported format
       }
-    //  Can also write as meetup = payload
-    //  Connect to firebase
-      commit('createMeetup', meetup)
+      //  Can also write as meetup = payload
+      //  Connect to firebase
+      // Actions are the place to do Async tasks in Vuex store, never run async code in mutations
+      // ref allows us to pass name of node to under which we want to store our data
+      firebase.database().ref('meetups').push(meetup)
+        .then((data) => {
+          const key = data.key
+          commit('createMeetup', {
+            ...meetup,
+            id: key
+            // ... is the spread keyword, it grabs all members of the meetup object and uses it to create new object with id included
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
