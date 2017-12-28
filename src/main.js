@@ -21,11 +21,17 @@ new Vue({
   render: h => h(App),
   created () {
     firebase.initializeApp({
-      apiKey: 'AIzaSyB2YeGj2V_hO8jjAYmy09VdSI8oHCdieiw',
-      authDomain: 'devmeetup-69e72.firebaseapp.com',
-      databaseURL: 'https://devmeetup-69e72.firebaseio.com',
-      projectId: 'devmeetup-69e72',
-      storageBucket: 'devmeetup-69e72.appspot.com'
+      apiKey: 'AIzaSyDIxFGN_vozpQLbFNaRY0YssKCDyqi5BrM',
+      authDomain: 'devmeetup-50f79.firebaseapp.com',
+      databaseURL: 'https://devmeetup-50f79.firebaseio.com',
+      projectId: 'devmeetup-50f79',
+      storageBucket: 'devmeetup-50f79.appspot.com'
+    })
+    firebase.auth().onAuthStateChanged((user) => {
+      // Detect whether the user signed in or a token is already present in the session
+      if (user) {
+        this.$store.dispatch('autoSignIn', user)
+      }
     })
     this.$store.dispatch('loadMeetups')
   }
