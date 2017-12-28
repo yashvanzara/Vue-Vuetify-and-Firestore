@@ -8,11 +8,13 @@ import { store } from './store'
 import DateFilter from './filters/date'
 import * as firebase from 'firebase'
 import Alert from './components/Shared/Alert'
+import EditMeetupDetailsDialog from './components/Meetup/Edit/EditMeetupDetailsDialog'
+
 Vue.use(Vuetify)
 Vue.filter('date', DateFilter)
 Vue.component('app-alert', Alert)
 Vue.config.productionTip = false
-
+Vue.component('app-edit-meetup-details-dialog', EditMeetupDetailsDialog)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
