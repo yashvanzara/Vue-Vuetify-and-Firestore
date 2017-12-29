@@ -39,6 +39,7 @@ new Vue({
       // Detect whether the user signed in or a token is already present in the session
       if (user) {
         this.$store.dispatch('autoSignIn', user)
+        this.$store.dispatch('fetchUserData')
       }
     })
     this.$store.dispatch('loadMeetups')

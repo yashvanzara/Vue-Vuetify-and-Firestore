@@ -8,8 +8,8 @@
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title v-if="userIsRegistered">Unregister from meetup</v-card-title>
-            <v-card-title v-else>Register for meetup</v-card-title>
+            <v-card-title class="primary--text" v-if="userIsRegistered">Unregister from meetup</v-card-title>
+            <v-card-title class="primary--text" v-else>Register for meetup</v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
@@ -23,6 +23,7 @@
           <v-flex xs12>
             <v-card-actions>
               <v-btn raised class="error"  @click="registerDialog = false">Cancel</v-btn>
+              <v-spacer></v-spacer>
               <v-btn raised class="success" @click="onAgree">Confirm</v-btn>
             </v-card-actions>
           </v-flex>
